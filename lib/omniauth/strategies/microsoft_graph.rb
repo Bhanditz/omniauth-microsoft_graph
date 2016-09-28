@@ -29,8 +29,8 @@ module OmniAuth
           'name' => [raw_info["givenName"], raw_info["surname"]].join(' '),
           'nickname' => raw_info["displayName"],
           'org_info' => org_info,
-          'org_display_name' => org_info["value"][0]["displayName"],
-          'org_id' => org_info["value"][0]["id"],
+          'org_display_name' => org_info["value"].blank? ? nil : org_info["value"][0]["displayName"],
+          'org_id' => org_info["value"].blank? ? nil : org_info["value"][0]["id"],
         }
       end
 
