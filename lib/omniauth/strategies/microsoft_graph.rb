@@ -28,6 +28,7 @@ module OmniAuth
           'last_name' => raw_info["surname"],
           'name' => [raw_info["givenName"], raw_info["surname"]].join(' '),
           'nickname' => raw_info["displayName"],
+          'org' => org_info
         }
       end
 
@@ -42,9 +43,13 @@ module OmniAuth
         @raw_info ||= access_token.get('https://graph.microsoft.com/v1.0/me').parsed
       end
 
+      def org_info
+        @org_info ||= access_token.get('https://graph.microsoft.com/v1.0/organization?$select=id,displayName').parsed
+      end
+
       def callback_url
         options[:callback_url] || full_host + script_name + callback_path
-      end      
+      end
     end
   end
 end
