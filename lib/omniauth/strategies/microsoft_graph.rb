@@ -15,6 +15,7 @@ module OmniAuth
       }
 
       option :token_params, {
+        grant_type: 'client_credentials'
       }
 
       option :scope, "offline_access https://graph.microsoft.com/User.Read"
