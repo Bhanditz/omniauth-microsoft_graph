@@ -3,6 +3,7 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class MicrosoftGraph < OmniAuth::Strategies::OAuth2
+
       option :name, :microsoft_graph
 
       option :client_options, {
@@ -16,6 +17,8 @@ module OmniAuth
 
       option :scope, "https://graph.microsoft.com/User.Read"
 
+      option :request_chat_access_token, false
+
       uid { raw_info["id"] }
 
       info do
@@ -28,8 +31,8 @@ module OmniAuth
           'org_info' => org_info,
           'org_display_name' => org_info["value"].blank? ? nil : org_info["value"][0]["displayName"],
           'org_id' => org_info["value"].blank? ? nil : org_info["value"][0]["id"],
-        }.merge ( options[:scope].include?('https://graph.microsoft.com/.default') ?
-          'chat_access_token' => chat_access_token : {})
+          'chat_access_token' => options[:request_chat_access_token] ? chat_access_token['access_token'] : nil
+        }
       end
 
       extra do
