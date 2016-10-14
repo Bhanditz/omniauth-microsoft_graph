@@ -14,11 +14,7 @@ module OmniAuth
       option :authorize_params, {
       }
 
-      option :token_params, {
-        grant_type: 'client_credentials'
-      }
-
-      option :scope, "offline_access https://graph.microsoft.com/User.Read"
+      option :scope, "https://graph.microsoft.com/User.Read"
 
       uid { raw_info["id"] }
 
@@ -32,7 +28,8 @@ module OmniAuth
           'org_info' => org_info,
           'org_display_name' => org_info["value"].blank? ? nil : org_info["value"][0]["displayName"],
           'org_id' => org_info["value"].blank? ? nil : org_info["value"][0]["id"],
-        }
+        }.merge ( options[:scope].include?('https://graph.microsoft.com/.default') ?
+          'chat_access_token' => chat_access_token : {})
       end
 
       extra do
@@ -48,6 +45,22 @@ module OmniAuth
 
       def org_info
         @org_info ||= access_token.get('https://graph.microsoft.com/v1.0/organization?$select=id,displayName').parsed
+      end
+
+      def chat_access_token
+        @chat_access_token ||= begin
+          response = RestClient.post(
+            "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            {
+              client_id: options.client_id,
+              client_secret: options.client_secret,
+              grant_type: "client_credentials",
+              scope: "https://graph.microsoft.com/.default",
+            }
+          )
+          raise ::OAuth2::Error.new(response) if response.code != 200
+          JSON.parse(response.body)
+        end
       end
 
       def callback_url
