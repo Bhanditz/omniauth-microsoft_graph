@@ -32,7 +32,7 @@ module OmniAuth
           'org_display_name' => org_info["value"].blank? ? nil : org_info["value"][0]["displayName"],
           'org_id' => org_info["value"].blank? ? nil : org_info["value"][0]["id"],
           'chat_access_token' => options[:request_chat_access_token] ? chat_access_token['access_token'] : nil,
-          'chat_access_token_expire' => options[:request_chat_access_token] ? chat_access_token['expires_in'] : nil,
+          'chat_access_token_expires_in' => options[:request_chat_access_token] ? chat_access_token['expires_in'] : nil,
         }
       end
 
