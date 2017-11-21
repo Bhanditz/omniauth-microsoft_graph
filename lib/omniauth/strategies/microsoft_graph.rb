@@ -59,7 +59,8 @@ module OmniAuth
               client_id: options.client_id,
               client_secret: options.client_secret,
               grant_type: "client_credentials",
-              scope: "https://graph.microsoft.com/.default",
+              # scope: "https://graph.microsoft.com/.default",
+              scope: "https://api.botframework.com/.default",
             }
           )
           raise ::OAuth2::Error.new(response) if response.code != 200
